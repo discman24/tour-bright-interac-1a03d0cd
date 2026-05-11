@@ -16,7 +16,7 @@
 html{scroll-behavior:smooth}
 body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}
 .step{min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px 40px;opacity:0;transition:opacity 0.5s ease}
-.step.active{display:flex;opacity:1}
+.step.active{display:flex !important;opacity:1}
 .step-indicator{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,248,240,0.95);backdrop-filter:blur(10px);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid rgba(255,107,53,0.1)}
 .step-dots{display:flex;gap:8px;align-items:center}
 .dot{width:12px;height:12px;border-radius:50%;background:#ddd;transition:all 0.3s}
@@ -312,9 +312,9 @@ function showStep(n) {
 document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
 const step = document.getElementById('step' + n);
 if (step) {
+// Defensive: clear any inline display from prior transitions, let CSS handle visibility
+document.querySelectorAll('.step').forEach(s => s.style.display = '');
 step.classList.add('active');
-step.style.display = 'flex';
-requestAnimationFrame(() => { step.style.opacity = '1'; });
 }
 currentStep = n;
 updateIndicator();
