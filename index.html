@@ -22,7 +22,10 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);over
 .dot{width:12px;height:12px;border-radius:50%;background:#ddd;transition:all 0.3s}
 .dot.active{background:var(--primary);transform:scale(1.3)}
 .dot.completed{background:var(--green)}
-.progress-bar-top{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--primary),var(--secondary));z-index:101;transition:width 0.5s ease;border-radius:0 2px 2px 0}
+.step-indicator.hidden-ind{opacity:0;pointer-events:none;transition:opacity .4s}
+.global-progress{position:fixed;top:56px;left:0;right:0;height:4px;z-index:99;background:#eee;transition:opacity .4s}
+.global-progress.hidden-ind{opacity:0;pointer-events:none}
+.global-progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));transition:width .6s;width:0}
 .logo{font-size:1.2rem;font-weight:900;color:var(--primary)}
 .logo span{color:var(--secondary)}
 .nav-buttons{display:flex;gap:8px}
@@ -131,9 +134,9 @@ h2{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:800;text-align:center;margin-b
 </head>
 <body>
 
-<div class="progress-bar-top" id="progressBar" style="width:0%"></div>
+<div class="global-progress hidden-ind" id="globalProgress"><div class="global-progress-fill" id="progressFill"></div></div>
 
-<div class="step-indicator" id="stepIndicator" style="display:none">
+<div class="step-indicator hidden-ind" id="stepIndicator">
 <div class="logo">我会了 <span>Wǒ Huì Le</span></div>
 <div class="step-dots" id="stepDots"></div>
 <div class="nav-buttons">
@@ -318,11 +321,15 @@ step.classList.add('active');
 }
 currentStep = n;
 updateIndicator();
+const _ind = document.getElementById('stepIndicator');
+const _prog = document.getElementById('globalProgress');
 if (n === 0) {
-document.getElementById('stepIndicator').style.display = 'none';
+_ind.classList.add('hidden-ind');
+_prog.classList.add('hidden-ind');
 animateCounters();
 } else {
-document.getElementById('stepIndicator').style.display = 'flex';
+_ind.classList.remove('hidden-ind');
+_prog.classList.remove('hidden-ind');
 }
 if (n === 1) initMatchGame();
 if (n === 2) initStrokeCanvas();
@@ -347,7 +354,7 @@ d.onclick = () => showStep(i);
 d.style.cursor = 'pointer';
 dots.appendChild(d);
 }
-document.getElementById('progressBar').style.width = ((currentStep / (totalSteps - 1)) * 100) + '%';
+document.getElementById('progressFill').style.width = ((currentStep / (totalSteps - 1)) * 100) + '%';
 document.getElementById('backBtn').disabled = currentStep === 0;
 document.getElementById('nextBtn').disabled = currentStep === totalSteps - 1;
 document.getElementById('nextBtn').textContent = currentStep === totalSteps - 2 ? 'Finish →' : 'Next →';
